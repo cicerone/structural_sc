@@ -20,7 +20,7 @@ SC_MODULE(Nand2)                   // declare Nand2 sc_module
     }
 };
 
-
+// show this diff
 
 SC_MODULE(TestGenerator)
 {
