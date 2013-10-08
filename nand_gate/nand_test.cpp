@@ -3,9 +3,10 @@ Copyright (c) 2009 Kotys LLC. Distributed under the Boost Software License, Vers
 (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================================== */
 
-#include "systemc.h"
+//#include "systemc.h"
+#include "../common/nand.cpp"
 
-
+/*
 SC_MODULE(Nand2)                   // declare Nand2 sc_module
 {
     sc_in<bool> in1_in, in2_in;    // input signal ports
@@ -22,7 +23,7 @@ SC_MODULE(Nand2)                   // declare Nand2 sc_module
         sensitive << in1_in << in2_in;  // sensitivity list
     }
 };
-
+*/
 
 SC_MODULE(TestGenerator)
 {
