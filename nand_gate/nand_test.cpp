@@ -3,27 +3,8 @@ Copyright (c) 2009 Kotys LLC. Distributed under the Boost Software License, Vers
 (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================================== */
 
-//#include "systemc.h"
 #include "../common/nand.cpp"
 
-/*
-SC_MODULE(Nand2)                   // declare Nand2 sc_module
-{
-    sc_in<bool> in1_in, in2_in;    // input signal ports
-    sc_out<bool> Out_out;          // output signal ports
-    
-    void ComputeNand()      
-    {
-        Out_out.write( !(in1_in.read() && in2_in.read()) );
-    }
-    
-    SC_CTOR(Nand2)                      // constructor for Nand2
-    {
-        SC_METHOD(ComputeNand);         // register do_nand2 with kernel
-        sensitive << in1_in << in2_in;  // sensitivity list
-    }
-};
-*/
 
 SC_MODULE(TestGenerator)
 {
@@ -58,7 +39,7 @@ SC_MODULE(TestGenerator)
 
 int sc_main(int argc, char* argv[])
 {
-    sc_signal<bool> in1_sig, in2_sig, out_sig;
+    sc_signal<bool> in1_sig, in2_sig, out_sig, out_with_delay_sig;
     sc_clock clk_sig("TestClock", 10, SC_NS,0.5);
 
     TestGenerator tg("test_generator");
@@ -69,13 +50,19 @@ int sc_main(int argc, char* argv[])
     Nand2 DUT("NAND2");
     DUT.in1_in(in1_sig);
     DUT.in2_in(in2_sig);
-    DUT.Out_out(out_sig);
+    DUT.out_out(out_sig);
+
+    Nand2WithDelay DUT2("NAND2WithDelay");
+    DUT2.in1_in(in1_sig);
+    DUT2.in2_in(in2_sig);
+    DUT2.out_out(out_with_delay_sig);
 
     sc_trace_file* p_trace_file;
     p_trace_file = sc_create_vcd_trace_file("traces");
     sc_trace(p_trace_file, in1_sig  , "in1" );
     sc_trace(p_trace_file, in2_sig  , "in2" );
     sc_trace(p_trace_file, out_sig  , "out" );
+    sc_trace(p_trace_file, out_with_delay_sig  , "out_with_delay" );
     sc_trace(p_trace_file, clk_sig  , "clk" );
 
     sc_start(70, SC_NS); 
