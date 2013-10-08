@@ -27,7 +27,7 @@ SC_MODULE(Nand2WithDelay)                   // declare Nand2 sc_module
 {
     sc_in<bool> in1_in, in2_in;    // input signal ports
     sc_out<bool> out_out;          // output signal ports
-    unsigned int delay_high2low, delay_low2high;  // propagation delay times
+    double delay_high2low, delay_low2high;  // propagation delay times
     bool         previous_value;
     bool         is_delayed_output;
     
@@ -63,8 +63,8 @@ SC_MODULE(Nand2WithDelay)                   // declare Nand2 sc_module
         SC_METHOD(ComputeNand);         // register do_nand2 with kernel
         sensitive << in1_in << in2_in;  // sensitivity list
 
-        delay_high2low = 2; // measured in ns
-        delay_low2high = 1; 
+        delay_high2low = 0.1; // measured in ns
+        delay_low2high = 0.1; 
         previous_value = false;
         is_delayed_output = false;
     }
