@@ -15,7 +15,7 @@ SC_MODULE(Nand2)                   // declare Nand2 sc_module
         out_out.write( !(in1_in.read() && in2_in.read()) );
     }
     
-    SC_CTOR(Nand2)                      // constructor for Nand2
+    SC_CTOR(Nand2) : in1_in("in1"), in2_in("in2"), out_out("out")
     {
         SC_METHOD(ComputeNand);         // register do_nand2 with kernel
         sensitive << in1_in << in2_in;  // sensitivity list
