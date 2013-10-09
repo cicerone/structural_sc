@@ -41,7 +41,7 @@ SC_MODULE(TestGenerator)
 
 int sc_main(int argc, char* argv[])
 {
-    sc_signal<bool> s_sig, r_sig, q_sig, qn_sig;
+    sc_signal<bool> s_sig, r_sig;
     sc_clock clk_sig("TestClock", 10, SC_NS, 0.5);
 
     TestGenerator tg("test_generator");
@@ -60,13 +60,11 @@ int sc_main(int argc, char* argv[])
     p_trace_file = sc_create_vcd_trace_file("traces");
     sc_trace(p_trace_file, s_sig  , "set" );
     sc_trace(p_trace_file, r_sig  , "reset" );
-    sc_trace(p_trace_file, q_sig  , "q" );
-    sc_trace(p_trace_file, qn_sig  , "qn" );
     sc_trace(p_trace_file, clk_sig  , "clk" );
     sc_trace(p_trace_file, DUT.a_sig  , "a" );
     sc_trace(p_trace_file, DUT.b_sig  , "b" );
-    sc_trace(p_trace_file, DUT.q_internal_sig  , "q_int" );
-    sc_trace(p_trace_file, DUT.qn_internal_sig  , "qn_int" );
+    sc_trace(p_trace_file, DUT.q_internal_sig  , "q" );
+    sc_trace(p_trace_file, DUT.qn_internal_sig  , "qn" );
 
     sc_start(70, SC_NS); 
     sc_close_vcd_trace_file(p_trace_file);
