@@ -3,11 +3,10 @@ Copyright (c) 2009 Kotys LLC. Distributed under the Boost Software License, Vers
 (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================================== */
 
-#include "../common/nand.cpp"
-#include "../common/s_latch.cpp"
+#include "../common/s_latch.h"
 
 
-
+/*
 SC_MODULE(TestGenerator)
 {
     sc_out<bool> s_out;
@@ -33,7 +32,39 @@ SC_MODULE(TestGenerator)
         SC_CTHREAD(GenerateSignals, clk.pos());
     }
 };
+*/
 
+SC_MODULE(TestGenerator)
+{
+    sc_out<bool> s_out;
+    sc_in<bool>  clk;
+    
+    void GenerateSignals()
+    {
+        while(1)
+        {
+            s_out.write(false);
+            wait(10, SC_NS);
+            s_out.write(true);
+            wait(1, SC_NS);
+            s_out.write(false);
+            wait(2, SC_NS);
+            s_out.write(true);
+            wait(3, SC_NS);
+            s_out.write(false);
+            wait(2, SC_NS);
+            s_out.write(true);
+            wait(5, SC_NS);
+            s_out.write(true);
+            wait(10, SC_NS);
+        }
+    }
+    
+    SC_CTOR(TestGenerator)
+    {
+        SC_THREAD(GenerateSignals);
+    }
+};
 
 int sc_main(int argc, char* argv[])
 {

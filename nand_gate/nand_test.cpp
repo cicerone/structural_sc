@@ -3,7 +3,7 @@ Copyright (c) 2009 Kotys LLC. Distributed under the Boost Software License, Vers
 (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================================== */
 
-#include "../common/nand.cpp"
+#include "../common/nand.h"
 
 
 SC_MODULE(TestGenerator)

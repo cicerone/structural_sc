@@ -3,6 +3,9 @@ Copyright (c) 2009 Kotys LLC. Distributed under the Boost Software License, Vers
 (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================================== */
 
+#ifndef __NAND2_H__
+#define __NAND2_H__
+
 #include "systemc.h"
 
 SC_MODULE(Nand2)                   // declare Nand2 sc_module
@@ -69,3 +72,6 @@ SC_MODULE(Nand2WithDelay)                   // declare Nand2 sc_module
         is_delayed_output = false;
     }
 };
+
+#endif
+
