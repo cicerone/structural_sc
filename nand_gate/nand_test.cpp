@@ -48,14 +48,14 @@ int sc_main(int argc, char* argv[])
     tg.clk(clk_sig);
 
     Nand2 DUT("NAND2");
-    DUT.in1_in(in1_sig);
-    DUT.in2_in(in2_sig);
-    DUT.out_out(out_sig);
+    DUT.in1(in1_sig);
+    DUT.in2(in2_sig);
+    DUT.out(out_sig);
 
     Nand2WithDelay DUT2("NAND2WithDelay");
-    DUT2.in1_in(in1_sig);
-    DUT2.in2_in(in2_sig);
-    DUT2.out_out(out_with_delay_sig);
+    DUT2.in1(in1_sig);
+    DUT2.in2(in2_sig);
+    DUT2.out(out_with_delay_sig);
 
     sc_trace_file* p_trace_file;
     p_trace_file = sc_create_vcd_trace_file("traces");

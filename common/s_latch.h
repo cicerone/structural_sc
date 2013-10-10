@@ -26,25 +26,25 @@ SC_MODULE(SLatch)
     SC_CTOR(SLatch) : u1("u1"), u2("u2"), u3("u3"), u4("u4"), u5("u5"),
                        set_in("set_in"), clk_in("clk_in")
     {
-        u1.in1_in(set_in);
-        u1.in2_in(clk_in);
-        u1.out_out(a_sig);
+        u1.in1(set_in);
+        u1.in2(clk_in);
+        u1.out(a_sig);
 
-        u2.in1_in(clk_in);
-        u2.in2_in(reset_sig);
-        u2.out_out(b_sig);
+        u2.in1(clk_in);
+        u2.in2(reset_sig);
+        u2.out(b_sig);
 
-        u3.in1_in(a_sig);
-        u3.in2_in(qn_internal_sig);
-        u3.out_out(q_internal_sig);
+        u3.in1(a_sig);
+        u3.in2(qn_internal_sig);
+        u3.out(q_internal_sig);
 
-        u4.in1_in(q_internal_sig);
-        u4.in2_in(b_sig);
-        u4.out_out(qn_internal_sig);
+        u4.in1(q_internal_sig);
+        u4.in2(b_sig);
+        u4.out(qn_internal_sig);
 
-        u5.in1_in(set_in);
-        u5.in2_in(set_in);
-        u5.out_out(reset_sig);
+        u5.in1(set_in);
+        u5.in2(set_in);
+        u5.out(reset_sig);
     }
 };
 
