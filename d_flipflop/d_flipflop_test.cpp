@@ -41,21 +41,17 @@ SC_MODULE(TestGenerator)
     
     void GenerateSignals()
     {
+        d_out.write(false);
+        wait(3, SC_NS);
+        d_out.write(true);
+        wait(2, SC_NS);
+        d_out.write(false);
+        wait(5, SC_NS);
         while(1)
         {
+            d_out.write(true);
+            wait(10, SC_NS);
             d_out.write(false);
-            wait(9, SC_NS);
-            d_out.write(true);
-            wait(1, SC_NS);
-            d_out.write(false);
-            wait(2, SC_NS);
-            d_out.write(true);
-            wait(3, SC_NS);
-            d_out.write(false);
-            wait(2, SC_NS);
-            d_out.write(true);
-            wait(5, SC_NS);
-            d_out.write(true);
             wait(10, SC_NS);
         }
     }
@@ -69,7 +65,7 @@ SC_MODULE(TestGenerator)
 int sc_main(int argc, char* argv[])
 {
     sc_signal<bool> d_sig;
-    sc_clock clk_sig("TestClock", 10, SC_NS, 0.5);
+    sc_clock clk_sig("TestClock", 10, SC_NS, 0.5, 1, SC_NS, true);
 
     TestGenerator tg("test_generator");
     tg.d_out(d_sig);
