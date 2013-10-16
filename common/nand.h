@@ -8,10 +8,10 @@ Copyright (c) 2009 Kotys LLC. Distributed under the Boost Software License, Vers
 
 #include "systemc.h"
 
-SC_MODULE(Nand2)                   // declare Nand2 sc_module
+SC_MODULE(Nand2)                
 {
-    sc_in<bool> in1, in2;    // input signal ports
-    sc_out<bool> out;          // output signal ports
+    sc_in<bool> in1, in2;   
+    sc_out<bool> out;      
     
     void ComputeNand()      
     {
@@ -20,17 +20,17 @@ SC_MODULE(Nand2)                   // declare Nand2 sc_module
     
     SC_CTOR(Nand2) : in1("in1"), in2("in2"), out("out")
     {
-        SC_METHOD(ComputeNand);         // register do_nand2 with kernel
-        sensitive << in1 << in2;  // sensitivity list
+        SC_METHOD(ComputeNand);  
+        sensitive << in1 << in2; 
     }
 };
 
 
-SC_MODULE(Nand2WithDelay)                   // declare Nand2 sc_module
+SC_MODULE(Nand2WithDelay)       
 {
-    sc_in<bool> in1, in2;    // input signal ports
-    sc_out<bool> out;          // output signal ports
-    double delay_high2low, delay_low2high;  // propagation delay times
+    sc_in<bool> in1, in2;   
+    sc_out<bool> out;      
+    unsigned int delay_high2low, delay_low2high; 
     bool         previous_value;
     bool         is_delayed_output;
     
@@ -50,10 +50,10 @@ SC_MODULE(Nand2WithDelay)                   // declare Nand2 sc_module
             else {
                 is_delayed_output = true;
                 if (previous_value == true) {
-                    next_trigger(delay_high2low, SC_NS);
+                    next_trigger(delay_high2low, SC_PS);
                 }
                 else {
-                    next_trigger(delay_low2high, SC_NS);
+                    next_trigger(delay_low2high, SC_PS);
                 }
                 previous_value = current_value;
             }
@@ -61,13 +61,13 @@ SC_MODULE(Nand2WithDelay)                   // declare Nand2 sc_module
         
     }
     
-    SC_CTOR(Nand2WithDelay)                      // constructor for Nand2
+    SC_CTOR(Nand2WithDelay)               
     {
-        SC_METHOD(ComputeNand);         // register do_nand2 with kernel
-        sensitive << in1 << in2;  // sensitivity list
+        SC_METHOD(ComputeNand);       
+        sensitive << in1 << in2; 
 
-        delay_high2low = 0.1; // measured in ns
-        delay_low2high = 0.1; 
+        delay_high2low = 100;
+        delay_low2high = 100; 
         previous_value = false;
         is_delayed_output = false;
     }
