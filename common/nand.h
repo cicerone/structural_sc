@@ -29,7 +29,7 @@ SC_MODULE(Nand2)
 SC_MODULE(Nand2WithDelay)       
 {
     sc_in<bool> in1, in2;   
-    sc_out<bool> out;      
+    sc_out<bool> out;
     unsigned int delay_high2low, delay_low2high; 
     bool         previous_value;
     bool         is_delayed_output;

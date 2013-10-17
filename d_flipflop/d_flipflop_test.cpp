@@ -64,7 +64,7 @@ SC_MODULE(TestGenerator)
 
 int sc_main(int argc, char* argv[])
 {
-    sc_signal<bool> d_sig;
+    sc_signal<bool> d_sig, q_sig, qn_sig;
     sc_clock clk_sig("TestClock", 10, SC_NS, 0.5, 1, SC_NS, true);
 
     TestGenerator tg("test_generator");
@@ -74,13 +74,17 @@ int sc_main(int argc, char* argv[])
     DFlipFlop DUT("DFlipFlop");
     DUT.clk_in(clk_sig);
     DUT.d_in(d_sig);
+   //DUT.q_out(q_sig);
+   //DUT.qn_out(qn_sig);
 
     sc_trace_file* p_trace_file;
     p_trace_file = sc_create_vcd_trace_file("traces");
     sc_trace(p_trace_file, d_sig  , "d" );
     sc_trace(p_trace_file, clk_sig  , "clk" );
-    sc_trace(p_trace_file, DUT.slatch1.q_internal_sig  , "q" );
-    sc_trace(p_trace_file, DUT.slatch1.qn_internal_sig  , "qn" );
+    sc_trace(p_trace_file, DUT.slatch1.q_internal_sig  , "q_internal");
+    sc_trace(p_trace_file, DUT.slatch1.qn_internal_sig  , "qn_internal");
+   //sc_trace(p_trace_file, q_sig  , "q");
+   //sc_trace(p_trace_file, qn_sig  , "qn");
 
     sc_start(170, SC_NS); 
     sc_close_vcd_trace_file(p_trace_file);

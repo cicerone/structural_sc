@@ -35,4 +35,30 @@ SC_MODULE(DFlipFlop)
     }
 };
 
+SC_MODULE(DFlipFlopN)              
+{
+    sc_in<bool> d_in, clk_in;    // input signal ports
+    //sc_port<sc_signal_out_if<bool>, 2> q_out, qn_out;              // output signal ports
+    sc_signal<bool> clkn_sig, q_sig, qn_sig; 
+    sc_out<bool> q_out, qn_out;
+    
+    Nand2WithDelay u1;
+    SLatch slatch0, slatch1;
+
+    SC_CTOR(DFlipFlopN) : u1("u1"), slatch0("slatch0"), slatch1("slatch1"),  
+                         q_sig("q_sig"), qn_sig("qn_sig"), clkn_sig("clkn_sig"), 
+                         d_in("d_in"), clk_in("clk_in"), q_out("q_out"), qn_out("qn_out")
+    {
+        u1.in1(clk_in);
+        u1.in2(clk_in);
+        u1.out(clkn_sig);
+        
+        slatch0.set_in(d_in);
+        slatch0.clk_in(clkn_sig);
+        slatch1.set_in(slatch0.q_internal_sig);
+        slatch1.clk_in(clk_in);
+        q_out(slatch1.u3.out);
+        qn_out(slatch1.u4.out);
+    }
+};
 #endif
