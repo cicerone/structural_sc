@@ -29,7 +29,8 @@ SC_MODULE(Nand2)
 SC_MODULE(Nand2WithDelay)       
 {
     sc_in<bool> in1, in2;   
-    sc_out<bool> out;
+    //sc_out<bool> out;
+    sc_port<sc_signal_inout_if<bool>, 0, SC_ONE_OR_MORE_BOUND> out;
     unsigned int delay_high2low, delay_low2high; 
     bool         previous_value;
     bool         is_delayed_output;
@@ -38,13 +39,13 @@ SC_MODULE(Nand2WithDelay)
     {
         bool current_value = !(in1.read() && in2.read());
         if (is_delayed_output) {
-            out.write(current_value);
+            out->write(current_value);
             is_delayed_output = false;
         }
         else 
         {
             if (previous_value == current_value) {
-                out.write(current_value);
+                out->write(current_value);
                 is_delayed_output = false;
             }
             else {
@@ -61,7 +62,7 @@ SC_MODULE(Nand2WithDelay)
         
     }
     
-    SC_CTOR(Nand2WithDelay)               
+    SC_CTOR(Nand2WithDelay) : in1("in1"), in2("in2"), out("out")
     {
         SC_METHOD(ComputeNand);       
         sensitive << in1 << in2; 
