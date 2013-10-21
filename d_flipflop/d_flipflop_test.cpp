@@ -69,7 +69,17 @@ public:
     sc_signal<bool> d_sig, q_sig, qn_sig, q_int_sig, qn_int_sig;
     sc_clock clk_sig;
     TestGenerator tg;
-    DFlipFlopN DUT;
+//#define TEST_DFLIP_FLOP_FAST
+#define TEST_DFLIP_FLOP
+
+
+#ifdef TEST_DFLIP_FLOP
+    DFlipFlop DUT;
+#endif
+
+#ifdef TEST_DFLIP_FLOP_FAST
+    DFlipFlopFast DUT;
+#endif
 
 
 public:
@@ -81,10 +91,16 @@ public:
 
         DUT.clk_in(clk_sig);
         DUT.d_in(d_sig);
+#ifdef TEST_DFLIP_FLOP
         DUT.q_out(q_sig);
         DUT.qn_out(qn_sig);
         DUT.q_int_out(q_int_sig);
         DUT.qn_int_out(qn_int_sig);
+        cout << "Test flipflop " << endl;
+#endif
+#ifdef TEST_DFLIP_FLOP_FAST
+        cout << "Test flipflopfast " << endl;
+#endif
     }
 };
 
