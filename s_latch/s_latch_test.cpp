@@ -77,7 +77,8 @@ int sc_main(int argc, char* argv[])
     tg.clk(clk_sig);
 
 //#define TEST_S_LATCH_V0
-#define TEST_S_LATCH_V1
+//#define TEST_S_LATCH_V1
+#define TEST_S_LATCH_WITH_TWO_OUT
 
 #ifdef TEST_S_LATCH_V0
     SLatchV0 DUT("SLatchV0");
@@ -85,6 +86,10 @@ int sc_main(int argc, char* argv[])
 
 #ifdef TEST_S_LATCH_V1
     SLatchV1 DUT("SLatchV1");
+#endif
+
+#ifdef TEST_S_LATCH_WITH_TWO_OUT
+    SLatchWithTwoOut DUT("SLatchWithTwoOut");
 #endif
 
     DUT.clk_in(clk_sig);
@@ -105,13 +110,12 @@ int sc_main(int argc, char* argv[])
     sc_trace(p_trace_file, DUT.qn_internal_sig  , "qn_internal_sig" );
 #ifndef TEST_S_LATCH_V0
     sc_trace(p_trace_file, q_sig  , "q_sig" );
-    sc_trace(p_trace_file, qn_sig  , "qn_sig" );
+    sc_trace(p_trace_file, qn_sig , "qn_sig" );
 #endif
 
     cout << "start simulation for " << DUT.name() << endl;
     sc_start(70, SC_NS); 
     sc_close_vcd_trace_file(p_trace_file);
-
     return 0;
 }
 
