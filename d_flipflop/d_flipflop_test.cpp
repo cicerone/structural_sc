@@ -62,31 +62,47 @@ SC_MODULE(TestGenerator)
     }
 };
 
+
+class Top : public sc_core::sc_module
+{
+public:
+    sc_signal<bool> d_sig, q_sig, qn_sig, q_int_sig, qn_int_sig;
+    sc_clock clk_sig;
+    TestGenerator tg;
+    DFlipFlopN DUT;
+
+
+public:
+    SC_CTOR(Top) : clk_sig("TestClock", 10, SC_NS, 0.5, 1, SC_NS, true),
+                   tg("test_generator"), DUT("DUT")
+    {
+        tg.d_out(d_sig);
+        tg.clk(clk_sig);
+
+        DUT.clk_in(clk_sig);
+        DUT.d_in(d_sig);
+        DUT.q_out(q_sig);
+        DUT.qn_out(qn_sig);
+        DUT.q_int_out(q_int_sig);
+        DUT.qn_int_out(qn_int_sig);
+    }
+};
+
+
 int sc_main(int argc, char* argv[])
 {
-    sc_signal<bool> d_sig, q_sig, qn_sig, q_int_sig, qn_int_sig;
-    sc_clock clk_sig("TestClock", 10, SC_NS, 0.5, 1, SC_NS, true);
 
-    TestGenerator tg("test_generator");
-    tg.d_out(d_sig);
-    tg.clk(clk_sig);
-
-    DFlipFlopN DUT("DFlipFlop");
-    DUT.clk_in(clk_sig);
-    DUT.d_in(d_sig);
-    DUT.q_out(q_sig);
-    DUT.qn_out(qn_sig);
-    DUT.q_int_out(q_int_sig);
-    DUT.qn_int_out(qn_int_sig);
-
+    Top top("top");
     sc_trace_file* p_trace_file;
     p_trace_file = sc_create_vcd_trace_file("traces");
-    sc_trace(p_trace_file, d_sig  , "d" );
-    sc_trace(p_trace_file, clk_sig  , "clk" );
-    sc_trace(p_trace_file, DUT.slatch1.q_internal_sig  , "q_internal");
-    sc_trace(p_trace_file, DUT.slatch1.qn_internal_sig  , "qn_internal");
-    sc_trace(p_trace_file, q_sig  , "q");
-    sc_trace(p_trace_file, qn_sig  , "qn");
+    sc_trace(p_trace_file, top.d_sig  , "d" );
+    sc_trace(p_trace_file, top.clk_sig  , "clk" );
+    sc_trace(p_trace_file, top.DUT.slatch1.q_internal_sig  , "q_internal");
+    sc_trace(p_trace_file, top.DUT.slatch1.qn_internal_sig  , "qn_internal");
+    sc_trace(p_trace_file, top.q_sig  , "q");
+    sc_trace(p_trace_file, top.qn_sig  , "qn");
+    sc_trace(p_trace_file, top.q_int_sig  , "q_int");
+    sc_trace(p_trace_file, top.qn_int_sig  , "qn_int");
 
     sc_start(170, SC_NS); 
     sc_close_vcd_trace_file(p_trace_file);
