@@ -47,9 +47,19 @@ int sc_main(int argc, char* argv[])
     tg.in2_out(in2_sig);
     tg.clk(clk_sig);
 
+//#define TEST_NAND2
+#define TEST_NAND
+
+#ifdef TEST_NAND2
     Nand2 DUT("NAND2");
     DUT.in1(in1_sig);
     DUT.in2(in2_sig);
+#endif
+#ifdef TEST_NAND
+    Nand DUT("NAND2", 2);
+    DUT.in[0](in1_sig);
+    DUT.in[1](in2_sig);
+#endif
     DUT.out(out_sig);
 
     Nand2WithDelay DUT2("NAND2WithDelay");
