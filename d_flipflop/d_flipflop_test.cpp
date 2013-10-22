@@ -69,8 +69,9 @@ public:
     sc_signal<bool> d_sig, q_sig, qn_sig, q_int_sig, qn_int_sig;
     sc_clock clk_sig;
     TestGenerator tg;
-//#define TEST_DFLIP_FLOP_FAST
-#define TEST_DFLIP_FLOP
+#define TEST_DFLIP_FLOP_FAST
+//#define TEST_DFLIP_FLOP
+//#define TEST_DFLIP_FLOP_OPTIMAL
 
 
 #ifdef TEST_DFLIP_FLOP
@@ -81,6 +82,9 @@ public:
     DFlipFlopFast DUT;
 #endif
 
+#ifdef TEST_DFLIP_FLOP_OPTIMAL
+    DFlipFlopOpt DUT;
+#endif
 
 public:
     SC_CTOR(Top) : clk_sig("TestClock", 10, SC_NS, 0.5, 1, SC_NS, true),
@@ -98,8 +102,15 @@ public:
         DUT.qn_int_out(qn_int_sig);
         cout << "Test flipflop " << endl;
 #endif
+
 #ifdef TEST_DFLIP_FLOP_FAST
-        cout << "Test flipflopfast " << endl;
+        cout << "Test flipflopFast " << endl;
+#endif
+
+#ifdef TEST_DFLIP_FLOP_OPTIMAL
+        DUT.q_out(q_sig);
+        DUT.qn_out(qn_sig);
+        cout << "Test flipflopOptimal " << endl;
 #endif
     }
 };
@@ -109,12 +120,11 @@ int sc_main(int argc, char* argv[])
 {
 
     Top top("top");
+    /*
     sc_trace_file* p_trace_file;
     p_trace_file = sc_create_vcd_trace_file("traces");
     sc_trace(p_trace_file, top.d_sig  , "d" );
     sc_trace(p_trace_file, top.clk_sig  , "clk" );
-    sc_trace(p_trace_file, top.DUT.slatch1.q_internal_sig  , "q_internal");
-    sc_trace(p_trace_file, top.DUT.slatch1.qn_internal_sig  , "qn_internal");
     sc_trace(p_trace_file, top.q_sig  , "q");
     sc_trace(p_trace_file, top.qn_sig  , "qn");
     sc_trace(p_trace_file, top.q_int_sig  , "q_int");
@@ -122,7 +132,9 @@ int sc_main(int argc, char* argv[])
 
     sc_start(170, SC_NS); 
     sc_close_vcd_trace_file(p_trace_file);
+    */
 
+    sc_start(7000000, SC_NS); 
     return 0;
 }
 
