@@ -33,7 +33,7 @@ SC_MODULE(DFlipFlopFast)
     }
 };
 
-SC_MODULE(DFlipFlop)              
+SC_MODULE(DFlipFlopMasterSlave)              
 {
     sc_in<bool> d_in, clk_in; 
     sc_signal<bool> clkn_sig; 
@@ -42,7 +42,7 @@ SC_MODULE(DFlipFlop)
     Nand2WithDelay u1;
     SLatchV1 slatch0, slatch1;
 
-    SC_CTOR(DFlipFlop) : u1("u1"), slatch0("slatch0"), slatch1("slatch1"),  
+    SC_CTOR(DFlipFlopMasterSlave) : u1("u1"), slatch0("slatch0"), slatch1("slatch1"),  
                          clkn_sig("clkn_sig"), d_in("d_in"), clk_in("clk_in"), 
                          q_out("q_out"), qn_out("qn_out"), q_int_out("q_int_out"), qn_int_out("qn_int_out")
     {
@@ -61,7 +61,7 @@ SC_MODULE(DFlipFlop)
     }
 };
 
-SC_MODULE(DFlipFlopOpt)              
+SC_MODULE(DFlipFlop)              
 {
     sc_in<bool> d_in, clk_in; 
     sc_signal<bool> a_sig, b_sig, c_sig, d_sig, q_int_sig, qn_int_sig; 
@@ -75,7 +75,7 @@ SC_MODULE(DFlipFlopOpt)
         qn_out.write(qn_int_sig);
     }
 
-    SC_CTOR(DFlipFlopOpt) : u1("u1"), u2("u2"), u3("u3"), u4("u4"), u5("u5"), u6("u6"),  
+    SC_CTOR(DFlipFlop) : u1("u1"), u2("u2"), u3("u3"), u4("u4"), u5("u5"), u6("u6"),  
                          a_sig("a"), b_sig("b"), c_sig("c"), d_sig("d"), 
                          q_int_sig("q_int"), qn_int_sig("qn_int"), d_in("d_in"), clk_in("clk_in"), 
                          q_out("q_out"), qn_out("qn_out")
@@ -107,6 +107,59 @@ SC_MODULE(DFlipFlopOpt)
         u6.in2(d_sig);
         u6.in3(clk_in);
         u6.out(a_sig);
+    }
+};
+
+SC_MODULE(DFlipFlopSR) // set reset dflipflop              
+{
+    sc_in<bool> d_in, clk_in, set_in, reset_in; 
+    sc_signal<bool> a_sig, b_sig, c_sig, e_sig, q_int_sig, qn_int_sig; 
+    sc_out<bool> q_out, qn_out;
+    
+    Nand3WithDelay u1, u2, u3, u4, u5, u6;
+
+    void WriteOutPort() {
+        q_out.write(q_int_sig);
+        qn_out.write(qn_int_sig);
+    }
+
+    SC_CTOR(DFlipFlopSR) : u1("u1"), u2("u2"), u3("u3"), u4("u4"), u5("u5"), u6("u6"),  
+                         a_sig("a"), b_sig("b"), c_sig("c"), e_sig("d"), 
+                         q_int_sig("q_int"), qn_int_sig("qn_int"), d_in("d_in"), clk_in("clk_in"), 
+                         set_in("set_in"), reset_in("reset_in"), q_out("q_out"), qn_out("qn_out")
+    {
+        SC_METHOD(WriteOutPort);       
+        sensitive << q_int_sig << qn_int_sig; 
+
+        u1.in1(set_in);
+        u1.in2(a_sig);
+        u1.in3(c_sig);
+        u1.out(e_sig);
+
+        u2.in1(e_sig);
+        u2.in2(clk_in);
+        u2.in3(reset_in);
+        u2.out(c_sig);
+
+        u3.in1(c_sig);
+        u3.in2(clk_in);
+        u3.in3(a_sig);
+        u3.out(b_sig);
+
+        u4.in1(b_sig);
+        u4.in2(d_in);
+        u4.in3(reset_in);
+        u4.out(a_sig);
+
+        u5.in1(set_in);
+        u5.in2(c_sig);
+        u5.in3(qn_int_sig);
+        u5.out(q_int_sig);
+
+        u6.in1(q_int_sig);
+        u6.in2(b_sig);
+        u6.in3(reset_in);
+        u6.out(qn_int_sig);
     }
 };
 

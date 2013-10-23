@@ -36,11 +36,15 @@ SC_MODULE(TestGenerator)
 
 SC_MODULE(TestGenerator)
 {
-    sc_out<bool> d_out;
+    sc_out<bool> d_out, set_out, reset_out;
     sc_in<bool>  clk;
+    unsigned cntr;
     
     void GenerateSignals()
     {
+        cntr = 0;
+        set_out.write(true);
+        reset_out.write(true);
         d_out.write(false);
         wait(3, SC_NS);
         d_out.write(true);
@@ -49,6 +53,19 @@ SC_MODULE(TestGenerator)
         wait(5, SC_NS);
         while(1)
         {
+            cntr++;
+            if (cntr == 10 || cntr == 11) {
+                set_out.write(false);
+            }
+            else {
+                set_out.write(true);
+            }
+            if (cntr == 15 || cntr == 16) {
+                reset_out.write(false);
+            }
+            else {
+                reset_out.write(true);
+            }
             d_out.write(true);
             wait(10, SC_NS);
             d_out.write(false);
@@ -66,16 +83,17 @@ SC_MODULE(TestGenerator)
 class Top : public sc_core::sc_module
 {
 public:
-    sc_signal<bool> d_sig, q_sig, qn_sig, q_int_sig, qn_int_sig;
+    sc_signal<bool> d_sig, set_sig, reset_sig, q_sig, qn_sig, q_int_sig, qn_int_sig;
     sc_clock clk_sig;
     TestGenerator tg;
-#define TEST_DFLIP_FLOP_FAST
-//#define TEST_DFLIP_FLOP
+//#define TEST_DFLIP_FLOP_FAST
+//#define TEST_DFLIP_FLOP_MASTER_SLAVE
 //#define TEST_DFLIP_FLOP_OPTIMAL
+#define TEST_DFLIP_FLOP_SET_RESET
 
 
-#ifdef TEST_DFLIP_FLOP
-    DFlipFlop DUT;
+#ifdef TEST_DFLIP_FLOP_MASTER_SLAVE
+    DFlipFlopMasterSlave DUT;
 #endif
 
 #ifdef TEST_DFLIP_FLOP_FAST
@@ -83,7 +101,11 @@ public:
 #endif
 
 #ifdef TEST_DFLIP_FLOP_OPTIMAL
-    DFlipFlopOpt DUT;
+    DFlipFlop DUT;
+#endif
+
+#ifdef TEST_DFLIP_FLOP_SET_RESET
+    DFlipFlopSR DUT;
 #endif
 
 public:
@@ -92,15 +114,23 @@ public:
     {
         tg.d_out(d_sig);
         tg.clk(clk_sig);
+        tg.set_out(set_sig);
+        tg.reset_out(reset_sig);
 
         DUT.clk_in(clk_sig);
         DUT.d_in(d_sig);
-#ifdef TEST_DFLIP_FLOP
+#ifdef TEST_DFLIP_FLOP_MASTER_SLAVE
         DUT.q_out(q_sig);
         DUT.qn_out(qn_sig);
-        DUT.q_int_out(q_int_sig);
-        DUT.qn_int_out(qn_int_sig);
         cout << "Test flipflop " << endl;
+#endif
+
+#ifdef TEST_DFLIP_FLOP_SET_RESET
+        DUT.q_out(q_sig);
+        DUT.qn_out(qn_sig);
+        DUT.set_in(set_sig);
+        DUT.reset_in(reset_sig);
+        cout << "Test flipflop set reset" << endl;
 #endif
 
 #ifdef TEST_DFLIP_FLOP_FAST
@@ -120,21 +150,18 @@ int sc_main(int argc, char* argv[])
 {
 
     Top top("top");
-    /*
     sc_trace_file* p_trace_file;
     p_trace_file = sc_create_vcd_trace_file("traces");
     sc_trace(p_trace_file, top.d_sig  , "d" );
     sc_trace(p_trace_file, top.clk_sig  , "clk" );
-    sc_trace(p_trace_file, top.q_sig  , "q");
+    sc_trace(p_trace_file, top.set_sig  , "set");
+    sc_trace(p_trace_file, top.reset_sig  , "reset");
     sc_trace(p_trace_file, top.qn_sig  , "qn");
-    sc_trace(p_trace_file, top.q_int_sig  , "q_int");
-    sc_trace(p_trace_file, top.qn_int_sig  , "qn_int");
+    sc_trace(p_trace_file, top.q_sig  , "q");
 
-    sc_start(170, SC_NS); 
+    sc_start(1700, SC_NS); 
     sc_close_vcd_trace_file(p_trace_file);
-    */
 
-    sc_start(7000000, SC_NS); 
     return 0;
 }
 
