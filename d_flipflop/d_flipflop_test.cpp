@@ -36,14 +36,13 @@ SC_MODULE(TestGenerator)
 
 SC_MODULE(TestGenerator)
 {
-    sc_out<bool> d_out, set_out, reset_out;
+    sc_out<bool> d_out, reset_out;
     sc_in<bool>  clk;
     unsigned cntr;
     
     void GenerateSignals()
     {
         cntr = 0;
-        set_out.write(true);
         reset_out.write(true);
         d_out.write(false);
         wait(3, SC_NS);
@@ -54,12 +53,6 @@ SC_MODULE(TestGenerator)
         while(1)
         {
             cntr++;
-            if (cntr == 10 || cntr == 11) {
-                set_out.write(false);
-            }
-            else {
-                set_out.write(true);
-            }
             if (cntr == 15 || cntr == 16) {
                 reset_out.write(false);
             }
@@ -83,7 +76,7 @@ SC_MODULE(TestGenerator)
 class Top : public sc_core::sc_module
 {
 public:
-    sc_signal<bool> d_sig, set_sig, reset_sig, q_sig, qn_sig, q_int_sig, qn_int_sig;
+    sc_signal<bool> d_sig, reset_sig, q_sig, qn_sig, q_int_sig, qn_int_sig;
     sc_clock clk_sig;
     TestGenerator tg;
 //#define TEST_DFLIP_FLOP_FAST
@@ -105,7 +98,7 @@ public:
 #endif
 
 #ifdef TEST_DFLIP_FLOP_SET_RESET
-    DFlipFlopSR DUT;
+    DFlipFlopR DUT;
 #endif
 
 public:
@@ -114,7 +107,6 @@ public:
     {
         tg.d_out(d_sig);
         tg.clk(clk_sig);
-        tg.set_out(set_sig);
         tg.reset_out(reset_sig);
 
         DUT.clk_in(clk_sig);
@@ -128,9 +120,8 @@ public:
 #ifdef TEST_DFLIP_FLOP_SET_RESET
         DUT.q_out(q_sig);
         DUT.qn_out(qn_sig);
-        DUT.set_in(set_sig);
         DUT.reset_in(reset_sig);
-        cout << "Test flipflop set reset" << endl;
+        cout << "Test flipflop reset" << endl;
 #endif
 
 #ifdef TEST_DFLIP_FLOP_FAST
@@ -154,7 +145,6 @@ int sc_main(int argc, char* argv[])
     p_trace_file = sc_create_vcd_trace_file("traces");
     sc_trace(p_trace_file, top.d_sig  , "d" );
     sc_trace(p_trace_file, top.clk_sig  , "clk" );
-    sc_trace(p_trace_file, top.set_sig  , "set");
     sc_trace(p_trace_file, top.reset_sig  , "reset");
     sc_trace(p_trace_file, top.qn_sig  , "qn");
     sc_trace(p_trace_file, top.q_sig  , "q");

@@ -110,30 +110,30 @@ SC_MODULE(DFlipFlop)
     }
 };
 
-SC_MODULE(DFlipFlopSR) // set reset dflipflop              
+SC_MODULE(DFlipFlopR) // reset dflipflop              
 {
-    sc_in<bool> d_in, clk_in, set_in, reset_in; 
+    sc_in<bool> d_in, clk_in, reset_in; 
     sc_signal<bool> a_sig, b_sig, c_sig, e_sig, q_int_sig, qn_int_sig; 
     sc_out<bool> q_out, qn_out;
     
-    Nand3WithDelay u1, u2, u3, u4, u5, u6;
+    Nand3WithDelay u2, u3, u4, u6;
+    Nand2WithDelay u1, u5;
 
     void WriteOutPort() {
         q_out.write(q_int_sig);
         qn_out.write(qn_int_sig);
     }
 
-    SC_CTOR(DFlipFlopSR) : u1("u1"), u2("u2"), u3("u3"), u4("u4"), u5("u5"), u6("u6"),  
+    SC_CTOR(DFlipFlopR) : u1("u1"), u2("u2"), u3("u3"), u4("u4"), u5("u5"), u6("u6"),  
                          a_sig("a"), b_sig("b"), c_sig("c"), e_sig("d"), 
                          q_int_sig("q_int"), qn_int_sig("qn_int"), d_in("d_in"), clk_in("clk_in"), 
-                         set_in("set_in"), reset_in("reset_in"), q_out("q_out"), qn_out("qn_out")
+                         reset_in("reset_in"), q_out("q_out"), qn_out("qn_out")
     {
         SC_METHOD(WriteOutPort);       
         sensitive << q_int_sig << qn_int_sig; 
 
-        u1.in1(set_in);
-        u1.in2(a_sig);
-        u1.in3(c_sig);
+        u1.in1(a_sig);
+        u1.in2(c_sig);
         u1.out(e_sig);
 
         u2.in1(e_sig);
@@ -151,9 +151,8 @@ SC_MODULE(DFlipFlopSR) // set reset dflipflop
         u4.in3(reset_in);
         u4.out(a_sig);
 
-        u5.in1(set_in);
-        u5.in2(c_sig);
-        u5.in3(qn_int_sig);
+        u5.in1(c_sig);
+        u5.in2(qn_int_sig);
         u5.out(q_int_sig);
 
         u6.in1(q_int_sig);
